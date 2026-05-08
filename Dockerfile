@@ -8,4 +8,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD php -S 0.0.0.0:$PORT
+CMD sh -c "php -S 0.0.0.0:${PORT:-8080}"
