@@ -1,14 +1,23 @@
 <?php
+
+$host = getenv("PGHOST");
+$port = getenv("PGPORT");
+$db = getenv("PGDATABASE");
+$user = getenv("PGUSER");
+$password = getenv("PGPASSWORD");
+
 $conexion = pg_connect("
-    host=ep-summer-smoke-apzbn57v.c-7.us-east-1.aws.neon.tech
-    dbname=neondb
-    user=neondb_owner
-    password=npg_fJqByZenL97Y
-    sslmode=require
-    options='endpoint=ep-summer-smoke-apzbn57v'
+host=$host
+port=$port
+dbname=$db
+user=$user
+password=$password
+sslmode=require
+options='endpoint=ep-summer-smoke-apzbn57v'
 ");
 
 if (!$conexion) {
     die("Error de conexión");
 }
+
 ?>
