@@ -1,12 +1,13 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-RUN apt-get update && apt-get install -y libpq-dev \
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
     && docker-php-ext-install pgsql pdo_pgsql
 
-COPY . /var/www/html
+WORKDIR /app
 
-RUN a2enmod rewrite
+COPY . .
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD ["apache2-foreground"]
+CMD php -S 0.0.0.0:8080
