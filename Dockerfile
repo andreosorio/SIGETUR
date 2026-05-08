@@ -8,8 +8,8 @@ WORKDIR /app
 
 COPY . /app
 
-ENV PORT=8080
+RUN chmod +x /app/start.sh
 
 EXPOSE 8080
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
+CMD ["/app/start.sh"]
