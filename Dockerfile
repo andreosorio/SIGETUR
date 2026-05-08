@@ -6,6 +6,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY . .
+COPY . /app
 
-CMD sh -c "php -S 0.0.0.0:${PORT:-8080} -t /app"
+ENV PORT=8080
+
+EXPOSE 8080
+
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
