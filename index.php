@@ -3,13 +3,15 @@ include("conexion.php");
 
 $query = "
 SELECT 
-    v.id,
-    ao.ciudad AS origen,
-    ad.ciudad AS destino,
-    v.precio_base
+v.id,
+ao.ciudad AS origen,
+ad.ciudad AS destino,
+v.precio_base
 FROM vuelos v
-JOIN aeropuertos ao ON v.aeropuerto_origen = ao.id
-JOIN aeropuertos ad ON v.aeropuerto_destino = ad.id
+JOIN aeropuertos ao 
+ON v.aeropuerto_origen = ao.id
+JOIN aeropuertos ad 
+ON v.aeropuerto_destino = ad.id
 ";
 
 $resultado = pg_query($conexion, $query);
@@ -38,70 +40,152 @@ href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.m
 
 body{
 background:#f5f5f5;
+margin:0;
+padding:0;
 display:flex;
-min-height:100vh;
 flex-direction:column;
+min-height:100vh;
 }
 
-main{
-flex:1 0 auto;
-}
+/* ===== HEADER ===== */
 
 nav{
 background:#29b6f6;
+height:80px;
+line-height:80px;
 }
 
-.page-footer{
-background:#29b6f6;
+.brand-logo{
+font-size:42px !important;
+font-weight:600;
+left:50%;
+transform:translateX(-50%);
+position:absolute;
+}
+
+/* ===== CONTENIDO ===== */
+
+main{
+flex:1 0 auto;
+padding-bottom:30px;
 }
 
 .titulo{
-margin-top:30px;
-margin-bottom:30px;
-font-weight:600;
+font-size:70px;
+font-weight:700;
+margin-top:40px;
+margin-bottom:40px;
+line-height:1.1;
+color:#212121;
+word-break:break-word;
 }
+
+/* ===== AVIÓN ===== */
+
+.avion{
+font-size:65px;
+display:inline-block;
+vertical-align:middle;
+margin-right:10px;
+}
+
+/* ===== GRID ===== */
 
 .grid-vuelos{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:25px;
-margin-bottom:40px;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:35px;
 }
 
+/* ===== CARD ===== */
+
 .card-vuelo{
-border-radius:15px;
-padding:15px;
-height:100%;
+background:white;
+border-radius:25px;
+padding:30px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+transition:0.3s;
 display:flex;
 flex-direction:column;
 justify-content:space-between;
+min-height:320px;
 }
 
-.card-vuelo h5{
-font-size:32px;
-margin-bottom:25px;
+.card-vuelo:hover{
+transform:translateY(-5px);
+}
+
+.ruta{
+font-size:34px;
+font-weight:500;
+line-height:1.2;
+margin-bottom:30px;
+word-break:break-word;
 }
 
 .precio{
-font-size:22px;
+font-size:42px;
 font-weight:bold;
-margin-bottom:20px;
 color:#03a9f4;
+margin-bottom:40px;
 }
 
 .btn-comprar{
 background:#29b6f6;
 width:100%;
+border-radius:6px;
+height:55px;
+line-height:55px;
+font-size:28px;
 }
 
 .btn-comprar:hover{
 background:#03a9f4;
 }
 
-@media(max-width:600px){
+/* ===== FOOTER ===== */
 
-.card-vuelo h5{
-font-size:24px;
+.page-footer{
+background:#29b6f6;
+padding-top:15px;
+padding-bottom:15px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:768px){
+
+.brand-logo{
+font-size:30px !important;
+}
+
+.titulo{
+font-size:42px;
+margin-top:25px;
+}
+
+.avion{
+font-size:42px;
+display:block;
+margin-bottom:10px;
+margin-right:0;
+}
+
+.ruta{
+font-size:28px;
+}
+
+.precio{
+font-size:32px;
+}
+
+.btn-comprar{
+font-size:22px;
+}
+
+.card-vuelo{
+min-height:280px;
+padding:25px;
 }
 
 }
@@ -113,57 +197,79 @@ font-size:24px;
 <body>
 
 <!-- HEADER -->
+
 <nav>
 
-<div class="nav-wrapper container">
+<div class="nav-wrapper">
 
-<a href="#" class="brand-logo">
-SIGETUR ✈️
+<a href="#" class="brand-logo center">
+SIGETUR
 </a>
 
 </div>
 
 </nav>
 
+<!-- CONTENIDO -->
+
 <main>
 
 <div class="container">
 
-<h3 class="titulo">
-Selecciona tu destino
-</h3>
+<h1 class="titulo">
 
-<!-- GRID -->
+<span class="avion">
+✈️
+</span>
+
+Selecciona tu destino
+
+</h1>
+
 <div class="grid-vuelos">
 
-<?php while($fila = pg_fetch_assoc($resultado)) { ?>
+<?php while($vuelo = pg_fetch_assoc($resultado)) { ?>
 
-<div class="card white z-depth-2 card-vuelo">
+<div class="card-vuelo">
 
 <div>
 
-<h5>
-<?php echo htmlspecialchars($fila['origen']); ?>
-→
-<?php echo htmlspecialchars($fila['destino']); ?>
-</h5>
+<div class="ruta">
 
-<p class="precio">
-$<?php echo number_format($fila['precio_base'],2); ?>
-</p>
+<?php
+echo htmlspecialchars($vuelo['origen']);
+?>
+
+→
+
+<?php
+echo htmlspecialchars($vuelo['destino']);
+?>
 
 </div>
 
-<form action="comprar.php" method="POST">
+<div class="precio">
+
+$<?php
+echo number_format($vuelo['precio_base'],2);
+?>
+
+</div>
+
+</div>
+
+<form
+action="comprar.php"
+method="POST">
 
 <input
 type="hidden"
 name="vuelo_id"
-value="<?php echo $fila['id']; ?>">
+value="<?php echo $vuelo['id']; ?>">
 
 <button
 type="submit"
-class="btn waves-effect waves-light btn-comprar">
+class="btn btn-comprar">
 
 COMPRAR
 
@@ -182,12 +288,11 @@ COMPRAR
 </main>
 
 <!-- FOOTER -->
+
 <footer class="page-footer">
 
 <div class="container">
-
-© 2026 SIGETUR - Sistema de compra de vuelos
-
+© 2026 SIGETUR
 </div>
 
 </footer>
