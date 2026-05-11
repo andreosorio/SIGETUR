@@ -7,7 +7,12 @@ $vuelo_id = intval($_POST['vuelo_id']);
 
 // vuelo
 $query = "
-SELECT v.id, ao.ciudad origen, ad.ciudad destino, v.precio_base
+SELECT 
+v.id,
+ao.ciudad origen,
+ad.ciudad destino,
+v.precio_base,
+v.fecha_salida
 FROM vuelos v
 JOIN aeropuertos ao ON v.aeropuerto_origen = ao.id
 JOIN aeropuertos ad ON v.aeropuerto_destino = ad.id
@@ -112,6 +117,17 @@ transform-origin: 0 0;
 color:#29b6f6 !important;
 }
 
+.fecha-viaje{
+background:#e3f2fd;
+padding:12px;
+border-left:5px solid #29b6f6;
+border-radius:8px;
+margin-top:15px;
+margin-bottom:20px;
+font-size:20px;
+color:#1565c0;
+}
+
 </style>
 
 </head>
@@ -145,6 +161,22 @@ SIGETUR ✈️
 Precio Base:
 $<?php echo $vuelo['precio_base']; ?>
 </h5>
+
+<!-- FECHA DEL VIAJE -->
+<div class="fecha-viaje">
+
+📅 Fecha del viaje:
+<strong>
+
+<?php
+echo !empty($vuelo['fecha_salida'])
+? date("d/m/Y", strtotime($vuelo['fecha_salida']))
+: "No disponible";
+?>
+
+</strong>
+
+</div>
 
 <form
 action="procesar_compra.php"

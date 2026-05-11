@@ -1,0 +1,130 @@
+CREATE DATABASE aerolinea
+
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    telefono VARCHAR(20)
+);
+
+-- Aerolíneas
+CREATE TABLE aerolineas (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100)
+);
+
+-- Aeropuertos
+CREATE TABLE aeropuertos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    ciudad VARCHAR(100),
+    pais VARCHAR(100)
+);
+
+-- Vuelos
+CREATE TABLE vuelos (
+    id SERIAL PRIMARY KEY,
+    aerolinea_id INT REFERENCES aerolineas(id),
+    aeropuerto_origen INT REFERENCES aeropuertos(id),
+    aeropuerto_destino INT REFERENCES aeropuertos(id),
+    fecha_salida TIMESTAMP,
+    fecha_llegada TIMESTAMP,
+    precio_base DECIMAL(10,2)
+);
+
+-- Boletos
+CREATE TABLE boletos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id),
+    vuelo_id INT REFERENCES vuelos(id),
+    fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    precio_pagado DECIMAL(10,2)
+);
+
+CREATE TABLE descuentos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20),
+    porcentaje INT
+);
+
+
+
+CREATE TABLE tarjetas (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id),
+    ultimos4 VARCHAR(4),
+    nombre_tarjeta VARCHAR(100),
+    fecha_exp VARCHAR(5),
+    pin_hash TEXT
+);
+
+
+-- Modificar boletos
+ALTER TABLE boletos 
+ADD COLUMN aerolinea_id INT,
+ADD COLUMN codigo_descuento VARCHAR(50);
+
+
+
+
+
+Insert into aerolineas values(1,'Avianca')
+Insert into aerolineas values(2,'Volaris')
+Insert into aerolineas values(3,'American Airlines')
+
+INSERT INTO aeropuertos (nombre, ciudad, pais)
+VALUES ('Aeropuerto Internacional Monseñor Óscar Arnulfo Romero', 'San Salvador', 'El Salvador');
+
+INSERT INTO aeropuertos (nombre, ciudad, pais)
+VALUES ('Aeropuerto Internacional La Aurora', 'Ciudad de Guatemala', 'Guatemala');
+
+INSERT INTO aeropuertos (nombre, ciudad, pais)
+VALUES ('Aeropuerto Internacional Juan Santamaría', 'San José', 'Costa Rica');
+
+-- Vuelo 1
+INSERT INTO vuelos 
+(aerolinea_id, aeropuerto_origen, aeropuerto_destino, fecha_salida, fecha_llegada, precio_base)
+VALUES 
+(1, 1, 2, '2026-06-01 08:00:00', '2026-06-01 09:30:00', 120.00);
+
+
+-- Vuelo 2
+INSERT INTO vuelos 
+(aerolinea_id, aeropuerto_origen, aeropuerto_destino, fecha_salida, fecha_llegada, precio_base)
+VALUES 
+(1, 2, 3, '2026-06-02 10:00:00', '2026-06-02 12:00:00', 180.00);
+
+
+-- Vuelo 3
+INSERT INTO vuelos 
+(aerolinea_id, aeropuerto_origen, aeropuerto_destino, fecha_salida, fecha_llegada, precio_base)
+VALUES 
+(1, 1, 3, '2026-06-03 14:00:00', '2026-06-03 16:30:00', 200.00);
+
+
+-- Vuelo 4
+INSERT INTO vuelos 
+(aerolinea_id, aeropuerto_origen, aeropuerto_destino, fecha_salida, fecha_llegada, precio_base)
+VALUES 
+(1, 3, 1, '2026-06-04 18:00:00', '2026-06-04 20:00:00', 160.00);
+
+
+INSERT INTO descuentos (codigo, porcentaje, fecha_expiracion)
+VALUES ('AlcachofaN', 40, '2026-12-31');
+
+INSERT INTO descuentos (codigo, porcentaje, fecha_expiracion)
+VALUES ('PROMO30', 30, '2026-01-31');
+
+
+
+ALTER TABLE usuarios ADD COLUMN total_compras INT DEFAULT 0;
+
+ALTER TABLE descuentos ADD COLUMN fecha_expiracion DATE;
+
+select * from vuelos
+select * from aeropuertos
+select * from usuarios
+select * from boletos
+select * from tarjetas
+
+select * from descuentos
